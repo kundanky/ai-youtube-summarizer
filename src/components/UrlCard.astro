@@ -2,89 +2,104 @@
 import "../styles/home.css";
 ---
 
-<div class="mt-6 sm:mt-10 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 p-4 sm:p-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8)] film-strip">
+<section class="mt-6 rounded-[30px] border border-white/10 bg-white/[0.03] backdrop-blur-2xl overflow-hidden">
 
-  <label
-    for="yt-url"
-    class="block text-[11px] uppercase tracking-[0.18em] text-zinc-500 mb-3">
-    YouTube Video URL
-  </label>
+  <div class="px-5 pt-5 pb-4 border-b border-white/5">
 
-  <div class="relative">
-    <svg
-      class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.6">
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757M10.81 15.312a4.5 4.5 0 0 1-1.242-7.244l4.5-4.5a4.5 4.5 0 0 1 6.364 6.364l-1.757 1.757" />
-    </svg>
+    <div class="flex items-center gap-2 mb-2">
+      <div class="w-2 h-2 rounded-full bg-white/70"></div>
 
-    <input
-      id="yt-url"
-      type="text"
-      placeholder="Paste any YouTube link..."
-      autocomplete="off"
-      spellcheck="false"
-      class="w-full rounded-2xl bg-black/40 border border-white/10 pl-12 pr-4 py-4 text-[15px] text-white placeholder-zinc-600 outline-none transition focus:border-white/40 focus:bg-black/60"
-    />
+      <span class="text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+        AI Workspace
+      </span>
+    </div>
+
+    <h2 class="text-xl font-semibold tracking-tight text-white">
+      Summarize any YouTube video
+    </h2>
+
+    <p class="mt-1 text-sm text-zinc-500">
+      Paste a public YouTube link below.
+    </p>
+
   </div>
 
-  <p id="yt-error" class="hidden mt-3 text-sm text-zinc-500">
-    That doesn't look like a YouTube link yet.
-  </p>
+  <div class="p-5">
 
-  <div
-    id="yt-preview"
-    class="hidden mt-4 rounded-2xl bg-white/[0.03] border border-white/10 p-3">
+    <div class="relative">
 
-    <div class="flex gap-3 items-center">
+      <svg
+        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.7">
+
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757M10.81 15.312a4.5 4.5 0 0 1-1.242-7.244l4.5-4.5a4.5 4.5 0 0 1 6.364 6.364l-1.757 1.757"/>
+
+      </svg>
+
+      <input
+        id="yt-url"
+        type="text"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="https://youtube.com/watch?v=..."
+        class="w-full rounded-2xl border border-white/10 bg-black/40 pl-12 pr-4 py-4 text-white placeholder-zinc-600 outline-none transition focus:border-white/30 focus:bg-black/60"/>
+
+    </div>
+
+    <p
+      id="yt-error"
+      class="hidden mt-3 text-sm text-red-400">
+    </p>
+
+    <div
+      id="yt-preview"
+      class="hidden mt-5 rounded-2xl border border-white/10 bg-black/20 overflow-hidden">
+
+      <img
+        id="yt-thumb"
+        src=""
+        alt=""
+        class="w-full aspect-video object-cover"/>
 
       <div
-        class="relative w-28 h-16 shrink-0 rounded-lg overflow-hidden bg-zinc-900 border border-white/10">
-
-        <img
-          id="yt-thumb"
-          src=""
-          alt=""
-          class="w-full h-full object-cover" />
-
-        <div
-          id="yt-thumb-skeleton"
-          class="absolute inset-0 animate-pulse bg-zinc-800">
-        </div>
-
+        id="yt-thumb-skeleton"
+        class="hidden w-full aspect-video animate-pulse bg-zinc-800">
       </div>
 
-      <div class="min-w-0">
+      <div class="p-4">
+
         <p
           id="yt-title"
-          class="text-sm font-medium text-white truncate leading-snug">
+          class="font-medium text-white leading-snug">
         </p>
 
         <p
           id="yt-channel"
-          class="text-xs text-zinc-500 mt-1 truncate">
+          class="mt-1 text-sm text-zinc-500">
         </p>
+
       </div>
 
     </div>
 
+    <button
+      id="yt-submit"
+      disabled
+      class="mt-5 w-full rounded-2xl bg-white text-black font-semibold py-4 transition disabled:bg-white/10 disabled:text-zinc-600 disabled:cursor-not-allowed hover:enabled:bg-zinc-200">
+
+      Generate AI Summary
+
+    </button>
+
   </div>
 
-  <button
-    id="yt-submit"
-    disabled
-    class="mt-5 w-full rounded-2xl bg-zinc-200 disabled:bg-white/10 disabled:text-zinc-600 disabled:cursor-not-allowed text-black py-4 font-semibold text-[15px] transition-all hover:enabled:bg-white active:enabled:scale-[0.98]">
-
-    Generate Summary
-
-  </button>
-
-</div>
+</section>
 <script>
   function extractVideoId(url) {
     const patterns = [
