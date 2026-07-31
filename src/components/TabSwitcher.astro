@@ -15,6 +15,11 @@
     btns.forEach((btn, index) => {
         btn.addEventListener('click', () => {
             indicator!.style.transform = `translateX(${index * 100}%)`;
+            
+            // Dispatch event
+            window.dispatchEvent(new CustomEvent('tab-change', { 
+              detail: { tab: (btn as HTMLElement).dataset.tab } 
+            }));
         });
     });
 </script>

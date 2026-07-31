@@ -3,9 +3,11 @@ import type { Platform, Metadata } from "./types";
 export const YouTubePlatform: Platform = {
   id: "youtube",
   name: "YouTube",
+  type: "link",
   icon: "youtube",
   placeholder: "https://youtube.com/watch?v=...",
   buttonLabel: "Summarize Video",
+  emptyState: "Paste a YouTube link to begin.",
   enabled: true,
   comingSoon: false,
   supportsUpload: false,

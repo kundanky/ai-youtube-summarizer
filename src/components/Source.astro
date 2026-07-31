@@ -1,5 +1,4 @@
 ---
-import { PLATFORMS } from '../platforms';
 ---
 
 <div class="relative w-full" id="source-dropdown">
@@ -9,7 +8,7 @@ import { PLATFORMS } from '../platforms';
     aria-haspopup="listbox"
     aria-expanded="false"
   >
-    <span id="selected-source">{PLATFORMS[0].name}</span>
+    <span id="selected-source">Loading...</span>
     <svg class="w-4 h-4 text-zinc-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
   </button>
 
@@ -18,27 +17,50 @@ import { PLATFORMS } from '../platforms';
     class="absolute z-50 w-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-[--radius-input] shadow-lg hidden animate-in fade-in zoom-in-95 duration-150"
     role="listbox"
   >
-    {PLATFORMS.map((platform) => (
-      <li
-        class="px-4 py-2.5 cursor-pointer hover:bg-primary-50 dark:hover:bg-zinc-800 text-sm transition-colors duration-150 flex items-center justify-between"
-        role="option"
-        data-id={platform.id}
-        data-name={platform.name}
-      >
-        <span>{platform.name}</span>
-        {platform.comingSoon && (
-          <span class="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded uppercase tracking-wider text-zinc-500">Soon</span>
-        )}
-      </li>
-    ))}
+    <!-- Dynamic items -->
   </ul>
 </div>
 
 <script>
+  import { getPlatformsByType } from '../platforms';
+
   const button = document.getElementById('source-button');
   const list = document.getElementById('source-list');
   const selected = document.getElementById('selected-source');
   const arrow = button?.querySelector('svg');
+
+  let currentTab: 'link' | 'audio' | 'text' = 'link';
+
+  function renderPlatforms() {
+    const platforms = getPlatformsByType(currentTab);
+    if (!list || !selected) return;
+
+    list.innerHTML = '';
+    platforms.forEach((platform, index) => {
+      const isSelected = index === 0; // Default first one as selected for now
+      const li = document.createElement('li');
+      li.className = `px-4 py-2.5 cursor-pointer hover:bg-primary-50 dark:hover:bg-zinc-800 text-sm transition-colors duration-150 flex items-center justify-between ${platform.comingSoon ? 'opacity-60 grayscale-[0.5]' : ''} ${isSelected ? 'text-primary-600 dark:text-primary-400 font-medium' : ''}`;
+      li.setAttribute('role', 'option');
+      li.dataset.id = platform.id;
+      li.dataset.name = platform.name;
+      
+      li.innerHTML = `
+        <span class="flex-grow">${platform.name}</span>
+        ${platform.comingSoon ? '<span class="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded uppercase tracking-wider text-zinc-500 ml-2">Soon</span>' : ''}
+      `;
+      
+      list.appendChild(li);
+
+      // Default to first platform
+      if (index === 0) {
+        selected.textContent = platform.name;
+        // Dispatch initial change for this tab
+        window.dispatchEvent(new CustomEvent('source-change', { 
+          detail: { platformId: platform.id } 
+        }));
+      }
+    });
+  }
 
   button?.addEventListener('click', () => {
     const expanded = button.getAttribute('aria-expanded') === 'true';
@@ -53,6 +75,12 @@ import { PLATFORMS } from '../platforms';
       const platformId = target.dataset.id;
       const platformName = target.dataset.name;
       
+      // Update selected state in UI
+      list.querySelectorAll('li').forEach(li => {
+          li.classList.remove('text-primary-600', 'dark:text-primary-400', 'font-medium');
+      });
+      target.classList.add('text-primary-600', 'dark:text-primary-400', 'font-medium');
+
       if (selected) selected.textContent = platformName!;
       list?.classList.add('hidden');
       button?.setAttribute('aria-expanded', 'false');
@@ -65,6 +93,11 @@ import { PLATFORMS } from '../platforms';
     }
   });
 
+  window.addEventListener('tab-change', (e: any) => {
+    currentTab = e.detail.tab;
+    renderPlatforms();
+  });
+
   document.addEventListener('click', (e) => {
     if (!document.getElementById('source-dropdown')?.contains(e.target as Node)) {
       list?.classList.add('hidden');
@@ -72,4 +105,7 @@ import { PLATFORMS } from '../platforms';
       arrow?.classList.remove('rotate-180');
     }
   });
+
+  // Initial render
+  renderPlatforms();
 </script>

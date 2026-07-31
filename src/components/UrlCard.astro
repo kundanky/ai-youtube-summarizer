@@ -41,10 +41,9 @@
         <p class="text-zinc-500 text-sm max-w-[280px] mx-auto">We're working hard to bring this feature to Keplix AI. Stay tuned!</p>
     </div>
   
-    <!-- Preview Section -->
     <div
-        id="content-preview"
-        class="hidden card p-2 mt-4 transition-all duration-300">
+    id="content-preview"
+    class="hidden card p-2 mt-6 transition-all duration-300">
 
         <img
           id="preview-thumb"
@@ -107,6 +106,10 @@
 
     comingSoonContainer?.classList.add('hidden');
     inputContainer?.classList.remove('hidden');
+    
+    const emptyStateText = emptyState?.querySelector('p');
+    if (emptyStateText) emptyStateText.textContent = activePlatform.emptyState;
+
     emptyState?.classList.remove('hidden');
     emptyState?.classList.add('flex');
 
