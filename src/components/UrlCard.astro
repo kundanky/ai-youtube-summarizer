@@ -1,21 +1,35 @@
-<div class="mt-12 rounded-[28px] bg-white/[0.03] backdrop-blur-xl border border-white/10 p-7 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8)] film-strip">
+---
+import "../styles/home.css";
+---
 
-  <label for="yt-url" class="block text-xs uppercase tracking-widest text-zinc-500 mb-3">
-    YouTube video URL
+<div class="mt-6 sm:mt-10 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 p-4 sm:p-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8)] film-strip">
+
+  <label
+    for="yt-url"
+    class="block text-[11px] uppercase tracking-[0.18em] text-zinc-500 mb-3">
+    YouTube Video URL
   </label>
 
   <div class="relative">
-    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757M10.81 15.312a4.5 4.5 0 0 1-1.242-7.244l4.5-4.5a4.5 4.5 0 0 1 6.364 6.364l-1.757 1.757" />
+    <svg
+      class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757M10.81 15.312a4.5 4.5 0 0 1-1.242-7.244l4.5-4.5a4.5 4.5 0 0 1 6.364 6.364l-1.757 1.757" />
     </svg>
 
     <input
       id="yt-url"
       type="text"
-      placeholder="https://youtube.com/watch?v=..."
+      placeholder="Paste any YouTube link..."
       autocomplete="off"
       spellcheck="false"
-      class="w-full rounded-2xl bg-black/40 border border-white/10 pl-12 pr-4 py-4 text-white placeholder-zinc-600 outline-none transition focus:border-white/40 focus:bg-black/60"
+      class="w-full rounded-2xl bg-black/40 border border-white/10 pl-12 pr-4 py-4 text-[15px] text-white placeholder-zinc-600 outline-none transition focus:border-white/40 focus:bg-black/60"
     />
   </div>
 
@@ -23,18 +37,20 @@
     That doesn't look like a YouTube link yet.
   </p>
 
-  <div id="yt-preview" class="hidden mt-5 rounded-2xl bg-white/[0.03] border border-white/10 p-3">
+  <div
+    id="yt-preview"
+    class="hidden mt-4 rounded-2xl bg-white/[0.03] border border-white/10 p-3">
 
-    <div class="flex gap-4 items-center">
+    <div class="flex gap-3 items-center">
 
-      <div class="relative w-28 h-16 shrink-0 rounded-lg overflow-hidden bg-zinc-900 border border-white/10">
+      <div
+        class="relative w-28 h-16 shrink-0 rounded-lg overflow-hidden bg-zinc-900 border border-white/10">
 
         <img
           id="yt-thumb"
           src=""
           alt=""
-          class="w-full h-full object-cover"
-        />
+          class="w-full h-full object-cover" />
 
         <div
           id="yt-thumb-skeleton"
@@ -44,10 +60,15 @@
       </div>
 
       <div class="min-w-0">
-        <p id="yt-title" class="text-sm font-medium text-white truncate leading-snug"></p>
+        <p
+          id="yt-title"
+          class="text-sm font-medium text-white truncate leading-snug">
+        </p>
 
-        <p id="yt-channel" class="text-xs text-zinc-500 mt-1 truncate"></p>
-
+        <p
+          id="yt-channel"
+          class="text-xs text-zinc-500 mt-1 truncate">
+        </p>
       </div>
 
     </div>
@@ -57,9 +78,9 @@
   <button
     id="yt-submit"
     disabled
-    class="mt-6 w-full rounded-2xl bg-zinc-200 disabled:bg-white/10 disabled:text-zinc-600 disabled:cursor-not-allowed text-black p-4 font-semibold text-base tracking-tight transition-all hover:enabled:bg-white hover:enabled:scale-[1.01] active:enabled:scale-[0.99]">
+    class="mt-5 w-full rounded-2xl bg-zinc-200 disabled:bg-white/10 disabled:text-zinc-600 disabled:cursor-not-allowed text-black py-4 font-semibold text-[15px] transition-all hover:enabled:bg-white active:enabled:scale-[0.98]">
 
-    Generate summary
+    Generate Summary
 
   </button>
 
