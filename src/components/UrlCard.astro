@@ -2,100 +2,69 @@
 import "../styles/home.css";
 ---
 
-<section class="mt-6 rounded-[30px] border border-white/10 bg-white/[0.03] backdrop-blur-2xl overflow-hidden">
+<section class="space-y-4">
 
-  <div class="px-5 pt-5 pb-4 border-b border-white/5">
+  <div class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl">
 
-    <div class="flex items-center gap-2 mb-2">
-      <div class="w-2 h-2 rounded-full bg-white/70"></div>
+    <label
+      for="yt-url"
+      class="mb-3 block text-xs uppercase tracking-[0.18em] text-zinc-500">
+      YouTube URL
+    </label>
 
-      <span class="text-[11px] uppercase tracking-[0.18em] text-zinc-500">
-        AI Workspace
-      </span>
-    </div>
-
-    <h2 class="text-xl font-semibold tracking-tight text-white">
-      Summarize any YouTube video
-    </h2>
-
-    <p class="mt-1 text-sm text-zinc-500">
-      Paste a public YouTube link below.
-    </p>
-
-  </div>
-
-  <div class="p-5">
-
-    <div class="relative">
-
-      <svg
-        class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.7">
-
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757M10.81 15.312a4.5 4.5 0 0 1-1.242-7.244l4.5-4.5a4.5 4.5 0 0 1 6.364 6.364l-1.757 1.757"/>
-
-      </svg>
-
-      <input
-        id="yt-url"
-        type="text"
-        autocomplete="off"
-        spellcheck="false"
-        placeholder="https://youtube.com/watch?v=..."
-        class="w-full rounded-2xl border border-white/10 bg-black/40 pl-12 pr-4 py-4 text-white placeholder-zinc-600 outline-none transition focus:border-white/30 focus:bg-black/60"/>
-
-    </div>
+    <input
+      id="yt-url"
+      type="url"
+      placeholder="https://youtube.com/watch?v=..."
+      autocomplete="off"
+      spellcheck="false"
+      class="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-4 text-white placeholder:text-zinc-600 outline-none transition focus:border-white/30 focus:bg-black/50"
+    />
 
     <p
       id="yt-error"
-      class="hidden mt-3 text-sm text-red-400">
+      class="mt-3 hidden text-sm text-red-400">
     </p>
-
-    <div
-      id="yt-preview"
-      class="hidden mt-5 rounded-2xl border border-white/10 bg-black/20 overflow-hidden">
-
-      <img
-        id="yt-thumb"
-        src=""
-        alt=""
-        class="w-full aspect-video object-cover"/>
-
-      <div
-        id="yt-thumb-skeleton"
-        class="hidden w-full aspect-video animate-pulse bg-zinc-800">
-      </div>
-
-      <div class="p-4">
-
-        <p
-          id="yt-title"
-          class="font-medium text-white leading-snug">
-        </p>
-
-        <p
-          id="yt-channel"
-          class="mt-1 text-sm text-zinc-500">
-        </p>
-
-      </div>
-
-    </div>
 
     <button
       id="yt-submit"
       disabled
-      class="mt-5 w-full rounded-2xl bg-white text-black font-semibold py-4 transition disabled:bg-white/10 disabled:text-zinc-600 disabled:cursor-not-allowed hover:enabled:bg-zinc-200">
+      class="mt-5 w-full rounded-2xl bg-white py-4 font-semibold text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-zinc-600">
 
-      Generate AI Summary
+      Generate Summary
 
     </button>
+
+  </div>
+
+  <div
+    id="yt-preview"
+    class="hidden overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl">
+
+    <img
+      id="yt-thumb"
+      src=""
+      alt=""
+      class="aspect-video w-full object-cover" />
+
+    <div
+      id="yt-thumb-skeleton"
+      class="hidden aspect-video w-full animate-pulse bg-zinc-800">
+    </div>
+
+    <div class="p-4">
+
+      <h3
+        id="yt-title"
+        class="font-medium text-white leading-snug">
+      </h3>
+
+      <p
+        id="yt-channel"
+        class="mt-2 text-sm text-zinc-500">
+      </p>
+
+    </div>
 
   </div>
 
