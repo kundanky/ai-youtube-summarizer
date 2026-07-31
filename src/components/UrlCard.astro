@@ -2,107 +2,139 @@
 ---
 
 <section class="space-y-4">
+    <!-- Input Section -->
+    <div id="input-container" class="space-y-4">
+        <input
+          id="content-input"
+          type="url"
+          placeholder="Paste link here..."
+          autocomplete="off"
+          spellcheck="false"
+          class="input-field"
+        />
 
-    <input
-      id="yt-url"
-      type="url"
-      placeholder="Paste YouTube link here..."
-      autocomplete="off"
-      spellcheck="false"
-      class="input-field"
-    />
+        <div id="upload-zone" class="hidden border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[--radius-input] p-8 text-center hover:border-primary-500/50 transition-colors cursor-pointer group">
+            <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📁</div>
+            <p class="text-sm text-zinc-500">Click to upload or drag and drop</p>
+            <p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest">Supports MP3, WAV, PDF</p>
+            <input type="file" class="hidden" id="file-input" />
+        </div>
 
-    <p
-      id="yt-error"
-      class="hidden text-sm text-red-500">
-    </p>
+        <p
+          id="content-error"
+          class="hidden text-sm text-red-500">
+        </p>
 
-    <button
-      id="yt-submit"
-      disabled
-      class="btn-primary flex items-center justify-center gap-2">
-      <span class="spinner hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-      Generate Summary
-    </button>
+        <button
+          id="generate-button"
+          disabled
+          class="btn-primary flex items-center justify-center gap-2">
+          <span class="spinner hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          <span id="button-text">Generate Summary</span>
+        </button>
+    </div>
+
+    <!-- Coming Soon Overlay -->
+    <div id="coming-soon-container" class="hidden py-12 text-center space-y-3 animate-in fade-in zoom-in-95 duration-300">
+        <div class="text-4xl">🚀</div>
+        <h3 class="font-bold text-lg" id="coming-soon-title">Coming Soon</h3>
+        <p class="text-zinc-500 text-sm max-w-[280px] mx-auto">We're working hard to bring this feature to Keplix AI. Stay tuned!</p>
+    </div>
   
-  <div
-    id="yt-preview"
-    class="hidden card p-2 mt-4 transition-all duration-300">
-
-    <img
-      id="yt-thumb"
-      src=""
-      alt=""
-      class="aspect-video w-full object-cover rounded-[calc(var(--radius-input)-4px)]" />
-
+    <!-- Preview Section -->
     <div
-      id="yt-thumb-skeleton"
-      class="hidden aspect-video w-full animate-pulse bg-zinc-200 dark:bg-zinc-800 rounded-[calc(var(--radius-input)-4px)]">
+        id="content-preview"
+        class="hidden card p-2 mt-4 transition-all duration-300">
+
+        <img
+          id="preview-thumb"
+          src=""
+          alt=""
+          class="aspect-video w-full object-cover rounded-[calc(var(--radius-input)-4px)]" />
+
+        <div
+          id="preview-skeleton"
+          class="hidden aspect-video w-full animate-pulse bg-zinc-200 dark:bg-zinc-800 rounded-[calc(var(--radius-input)-4px)]">
+        </div>
+
+        <div class="p-3">
+          <h3
+            id="preview-title"
+            class="font-medium text-sm leading-snug text-zinc-900 dark:text-zinc-100">
+          </h3>
+          <p
+            id="preview-author"
+            class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          </p>
+        </div>
     </div>
-
-    <div class="p-3">
-
-      <h3
-        id="yt-title"
-        class="font-medium text-sm leading-snug text-zinc-900 dark:text-zinc-100">
-      </h3>
-
-      <p
-        id="yt-channel"
-        class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-      </p>
-
-    </div>
-
-  </div>
-
 </section>
+
 <script>
-  // Show empty state by default
+  import { PLATFORMS, getPlatform } from '../platforms';
+
+  let activePlatform = PLATFORMS[0];
   const emptyState = document.getElementById('empty-state');
-  emptyState?.classList.remove('hidden');
-  emptyState?.classList.add('flex');
+  
+  const input = document.getElementById("content-input") as HTMLInputElement;
+  const uploadZone = document.getElementById("upload-zone");
+  const errorEl = document.getElementById("content-error");
+  const preview = document.getElementById("content-preview");
+  const thumb = document.getElementById("preview-thumb") as HTMLImageElement;
+  const thumbSkeleton = document.getElementById("preview-skeleton");
+  const titleEl = document.getElementById("preview-title");
+  const authorEl = document.getElementById("preview-author");
+  const submitBtn = document.getElementById("generate-button") as HTMLButtonElement;
+  const btnText = document.getElementById("button-text");
+  const spinner = submitBtn?.querySelector('.spinner');
+  
+  const inputContainer = document.getElementById("input-container");
+  const comingSoonContainer = document.getElementById("coming-soon-container");
+  const comingSoonTitle = document.getElementById("coming-soon-title");
 
-  function extractVideoId(url) {
-    const patterns = [
-      /youtube\.com\/watch\?v=([^&\n?#]+)/,
-      /youtube\.com\/embed\/([^&\n?#]+)/,
-      /youtube\.com\/shorts\/([^&\n?#]+)/,
-      /youtu\.be\/([^&\n?#]+)/,
-    ];
+  let debounceTimer: ReturnType<typeof setTimeout>;
+  let currentRequestId = 0;
 
-    for (const pattern of patterns) {
-      const match = url.match(pattern);
-      if (match) return match[1];
+  function updateUI() {
+    if (activePlatform.comingSoon) {
+        inputContainer?.classList.add('hidden');
+        preview?.classList.add('hidden');
+        emptyState?.classList.add('hidden');
+        comingSoonContainer?.classList.remove('hidden');
+        if (comingSoonTitle) comingSoonTitle.textContent = `${activePlatform.name} is coming soon`;
+        return;
     }
 
-    return null;
+    comingSoonContainer?.classList.add('hidden');
+    inputContainer?.classList.remove('hidden');
+    emptyState?.classList.remove('hidden');
+    emptyState?.classList.add('flex');
+
+    if (activePlatform.supportsUpload) {
+        input.classList.add('hidden');
+        uploadZone?.classList.remove('hidden');
+    } else {
+        input.classList.remove('hidden');
+        uploadZone?.classList.add('hidden');
+        input.placeholder = activePlatform.placeholder;
+    }
+
+    if (btnText) btnText.textContent = activePlatform.buttonLabel;
+    resetPreview();
   }
-
-  const input = document.getElementById("yt-url");
-  const errorEl = document.getElementById("yt-error");
-  const preview = document.getElementById("yt-preview");
-  const thumb = document.getElementById("yt-thumb");
-  const thumbSkeleton = document.getElementById("yt-thumb-skeleton");
-  const titleEl = document.getElementById("yt-title");
-  const channelEl = document.getElementById("yt-channel");
-  const submitBtn = document.getElementById("yt-submit");
-  const spinner = submitBtn?.querySelector('.spinner');
-
-  let debounceTimer;
-  let currentRequestId = 0;
 
   function resetPreview() {
     preview?.classList.add("hidden");
     errorEl?.classList.add("hidden");
-    if(submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
-    emptyState?.classList.remove('hidden');
-    emptyState?.classList.add('flex');
+    if(submitBtn) submitBtn.disabled = true;
+    if (!activePlatform.comingSoon) {
+        emptyState?.classList.remove('hidden');
+        emptyState?.classList.add('flex');
+    }
   }
 
   async function handleInput() {
-    const url = (input as HTMLInputElement)?.value.trim();
-
+    const url = input?.value.trim();
     clearTimeout(debounceTimer);
 
     if (!url) {
@@ -110,88 +142,87 @@
       return;
     }
 
-    const videoId = extractVideoId(url);
-
-    if (!videoId) {
-      preview?.classList.add("hidden");
-      if(errorEl) {
-          errorEl.classList.remove("hidden");
-          errorEl.textContent = "Please enter a valid YouTube URL.";
-      }
-      if(submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
-      emptyState?.classList.remove('hidden');
-      emptyState?.classList.add('flex');
-      return;
+    if (activePlatform.validationRegex) {
+        const match = url.match(activePlatform.validationRegex);
+        if (!match) {
+            preview?.classList.add("hidden");
+            if(errorEl) {
+                errorEl.classList.remove("hidden");
+                errorEl.textContent = `Please enter a valid ${activePlatform.name} URL.`;
+            }
+            if(submitBtn) submitBtn.disabled = true;
+            emptyState?.classList.remove('hidden');
+            emptyState?.classList.add('flex');
+            return;
+        }
     }
 
     errorEl?.classList.add("hidden");
 
-    debounceTimer = setTimeout(() => {
-      fetchVideoInfo(url, videoId);
-    }, 400);
+    if (activePlatform.supportsPreview && activePlatform.fetchMetadata) {
+        debounceTimer = setTimeout(() => {
+            fetchMetadata(url);
+        }, 400);
+    } else {
+        if(submitBtn) submitBtn.disabled = false;
+    }
   }
 
-  async function fetchVideoInfo(url, videoId) {
+  async function fetchMetadata(url: string) {
+    if (!activePlatform.fetchMetadata) return;
+    
     const requestId = ++currentRequestId;
-
-    if(thumb) (thumb as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
     thumbSkeleton?.classList.remove("hidden");
-    
-    // UI state
     spinner?.classList.remove('hidden');
-    if(input) (input as HTMLInputElement).disabled = true;
+    if(input) input.disabled = true;
     
-    if(titleEl) titleEl.textContent = "Fetching video...";
-    if(channelEl) channelEl.textContent = "";
+    if(titleEl) titleEl.textContent = "Fetching details...";
+    if(authorEl) authorEl.textContent = "";
 
     preview?.classList.remove("hidden");
     emptyState?.classList.add('hidden');
     emptyState?.classList.remove('flex');
-    if(submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
+    if(submitBtn) submitBtn.disabled = true;
 
-    try {
-      const response = await fetch(
-        `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
-      );
+    const data = await activePlatform.fetchMetadata(url);
 
-      if (requestId !== currentRequestId) return;
+    if (requestId !== currentRequestId) return;
 
-      if (!response.ok) throw new Error();
-
-      const data = await response.json();
-      if(titleEl) titleEl.textContent = data.title || "Untitled video";
-
-      if(channelEl) channelEl.textContent = data.author_name || "";
-
-      if (data.thumbnail_url && thumb) {
-        (thumb as HTMLImageElement).src = data.thumbnail_url;
-      }
-
-      if(submitBtn) (submitBtn as HTMLButtonElement).disabled = false;
-    } catch {
-      if (requestId !== currentRequestId) return;
-
-      preview?.classList.add("hidden");
-      if(errorEl) {
-        errorEl.textContent =
-          "Couldn't find that video. Check the link and try again.";
-        errorEl.classList.remove("hidden");
-      }
-      if(submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
-      emptyState?.classList.remove('hidden');
-      emptyState?.classList.add('flex');
-    } finally {
-      if (requestId === currentRequestId) {
-        thumbSkeleton?.classList.add("hidden");
-        spinner?.classList.add('hidden');
-        if(input) (input as HTMLInputElement).disabled = false;
-      }
+    if (data.error) {
+        preview?.classList.add("hidden");
+        if(errorEl) {
+            errorEl.textContent = data.error;
+            errorEl.classList.remove("hidden");
+        }
+        if(submitBtn) submitBtn.disabled = true;
+        emptyState?.classList.remove('hidden');
+        emptyState?.classList.add('flex');
+    } else {
+        if(titleEl) titleEl.textContent = data.title;
+        if(authorEl) authorEl.textContent = data.author || "";
+        if (data.thumbnail && thumb) {
+            thumb.src = data.thumbnail;
+        }
+        if(submitBtn) submitBtn.disabled = false;
     }
+
+    thumbSkeleton?.classList.add("hidden");
+    spinner?.classList.add('hidden');
+    if(input) input.disabled = false;
   }
+
+  // Listen for platform changes
+  window.addEventListener('source-change', (e: any) => {
+    activePlatform = getPlatform(e.detail.platformId);
+    updateUI();
+  });
 
   thumb?.addEventListener("load", () => {
     thumbSkeleton?.classList.add("hidden");
   });
 
   input?.addEventListener("input", handleInput);
+  
+  // Initial UI state
+  updateUI();
 </script>

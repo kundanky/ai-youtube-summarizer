@@ -1,5 +1,5 @@
 ---
-const sources = ['YouTube', 'Instagram', 'X (Twitter)', 'TikTok'];
+import { PLATFORMS } from '../platforms';
 ---
 
 <div class="relative w-full" id="source-dropdown">
@@ -9,7 +9,7 @@ const sources = ['YouTube', 'Instagram', 'X (Twitter)', 'TikTok'];
     aria-haspopup="listbox"
     aria-expanded="false"
   >
-    <span id="selected-source">{sources[0]}</span>
+    <span id="selected-source">{PLATFORMS[0].name}</span>
     <svg class="w-4 h-4 text-zinc-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
   </button>
 
@@ -18,13 +18,17 @@ const sources = ['YouTube', 'Instagram', 'X (Twitter)', 'TikTok'];
     class="absolute z-50 w-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-[--radius-input] shadow-lg hidden animate-in fade-in zoom-in-95 duration-150"
     role="listbox"
   >
-    {sources.map((source) => (
+    {PLATFORMS.map((platform) => (
       <li
-        class="px-4 py-2.5 cursor-pointer hover:bg-primary-50 dark:hover:bg-zinc-800 text-sm transition-colors duration-150"
+        class="px-4 py-2.5 cursor-pointer hover:bg-primary-50 dark:hover:bg-zinc-800 text-sm transition-colors duration-150 flex items-center justify-between"
         role="option"
-        data-value={source}
+        data-id={platform.id}
+        data-name={platform.name}
       >
-        {source}
+        <span>{platform.name}</span>
+        {platform.comingSoon && (
+          <span class="text-[10px] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded uppercase tracking-wider text-zinc-500">Soon</span>
+        )}
       </li>
     ))}
   </ul>
@@ -44,16 +48,23 @@ const sources = ['YouTube', 'Instagram', 'X (Twitter)', 'TikTok'];
   });
 
   list?.addEventListener('click', (e) => {
-    const target = e.target as HTMLLIElement;
-    if (target.tagName === 'LI') {
-      selected!.textContent = target.dataset.value!;
-      list.classList.add('hidden');
+    const target = (e.target as HTMLElement).closest('li');
+    if (target) {
+      const platformId = target.dataset.id;
+      const platformName = target.dataset.name;
+      
+      if (selected) selected.textContent = platformName!;
+      list?.classList.add('hidden');
       button?.setAttribute('aria-expanded', 'false');
       arrow?.classList.remove('rotate-180');
+
+      // Dispatch event
+      window.dispatchEvent(new CustomEvent('source-change', { 
+        detail: { platformId } 
+      }));
     }
   });
 
-  // Close when clicking outside
   document.addEventListener('click', (e) => {
     if (!document.getElementById('source-dropdown')?.contains(e.target as Node)) {
       list?.classList.add('hidden');

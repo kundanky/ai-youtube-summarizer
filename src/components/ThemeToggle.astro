@@ -21,6 +21,7 @@
     
     // Save preference
     const isDark = document.documentElement.classList.contains('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    const newTheme = isDark ? 'dark' : 'light';
+    localStorage.setItem('theme', newTheme);
   });
 </script>
