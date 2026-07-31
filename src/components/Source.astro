@@ -2,9 +2,63 @@
 const sources = ['YouTube', 'Instagram', 'X (Twitter)', 'TikTok'];
 ---
 
-<select 
-    class="w-full px-4 py-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm"
-    aria-label="Select content source"
->
-    {sources.map(source => <option value={source}>{source}</option>)}
-</select>
+<div class="relative w-full" id="source-dropdown">
+  <button
+    id="source-button"
+    class="w-full flex items-center justify-between px-4 py-3 rounded-[--radius-input] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 hover:border-primary-500/50 outline-none transition-all duration-200 text-sm"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+  >
+    <span id="selected-source">{sources[0]}</span>
+    <svg class="w-4 h-4 text-zinc-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+  </button>
+
+  <ul
+    id="source-list"
+    class="absolute z-50 w-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-[--radius-input] shadow-lg hidden animate-in fade-in zoom-in-95 duration-150"
+    role="listbox"
+  >
+    {sources.map((source) => (
+      <li
+        class="px-4 py-2.5 cursor-pointer hover:bg-primary-50 dark:hover:bg-zinc-800 text-sm transition-colors duration-150"
+        role="option"
+        data-value={source}
+      >
+        {source}
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  const button = document.getElementById('source-button');
+  const list = document.getElementById('source-list');
+  const selected = document.getElementById('selected-source');
+  const arrow = button?.querySelector('svg');
+
+  button?.addEventListener('click', () => {
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', (!expanded).toString());
+    list?.classList.toggle('hidden');
+    arrow?.classList.toggle('rotate-180');
+  });
+
+  list?.addEventListener('click', (e) => {
+    const target = e.target as HTMLLIElement;
+    if (target.tagName === 'LI') {
+      selected!.textContent = target.dataset.value!;
+      list.classList.add('hidden');
+      button?.setAttribute('aria-expanded', 'false');
+      arrow?.classList.remove('rotate-180');
+    }
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('source-dropdown')?.contains(e.target as Node)) {
+      list?.classList.add('hidden');
+      button?.setAttribute('aria-expanded', 'false');
+      arrow?.classList.remove('rotate-180');
+    }
+  });
+</script>

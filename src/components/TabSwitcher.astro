@@ -1,11 +1,11 @@
 ---
 ---
 
-<div class="relative flex w-full bg-zinc-100 dark:bg-zinc-800 rounded-lg p-1" id="tab-switcher">
-    <div id="tab-indicator" class="absolute h-[calc(100%-8px)] top-1 left-1 w-[calc(33.33%-8px)] bg-white dark:bg-zinc-700 rounded-md shadow-sm transition-all duration-200 ease-out"></div>
-    <button data-tab="link" class="relative flex-1 py-2 text-sm font-medium z-10 transition-colors">Link</button>
-    <button data-tab="audio" class="relative flex-1 py-2 text-sm font-medium z-10 transition-colors">Audio</button>
-    <button data-tab="text" class="relative flex-1 py-2 text-sm font-medium z-10 transition-colors">Text</button>
+<div class="relative flex w-full bg-zinc-100 dark:bg-zinc-800 rounded-[--radius-input] p-1 h-12" id="tab-switcher">
+    <div id="tab-indicator" class="absolute h-[calc(100%-8px)] top-1 left-1 w-[calc(33.33%-8px)] bg-white dark:bg-zinc-700 rounded-[calc(var(--radius-input)-4px)] shadow-sm transition-all duration-200 ease-out"></div>
+    <button data-tab="link" class="relative flex-1 text-sm font-medium z-10 transition-colors hover:text-primary-500">Link</button>
+    <button data-tab="audio" class="relative flex-1 text-sm font-medium z-10 transition-colors hover:text-primary-500">Audio</button>
+    <button data-tab="text" class="relative flex-1 text-sm font-medium z-10 transition-colors hover:text-primary-500">Text</button>
 </div>
 
 <script>
@@ -14,8 +14,7 @@
     
     btns.forEach((btn, index) => {
         btn.addEventListener('click', () => {
-            const width = indicator.offsetWidth;
-            indicator.style.transform = `translateX(${index * 100}%)`;
+            indicator!.style.transform = `translateX(${index * 100}%)`;
         });
     });
 </script>

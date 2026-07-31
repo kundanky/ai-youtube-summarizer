@@ -27,17 +27,17 @@
   
   <div
     id="yt-preview"
-    class="hidden card p-2 mt-4">
+    class="hidden card p-2 mt-4 transition-all duration-300">
 
     <img
       id="yt-thumb"
       src=""
       alt=""
-      class="aspect-video w-full object-cover rounded-md" />
+      class="aspect-video w-full object-cover rounded-[calc(var(--radius-input)-4px)]" />
 
     <div
       id="yt-thumb-skeleton"
-      class="hidden aspect-video w-full animate-pulse bg-zinc-200 dark:bg-zinc-800 rounded-md">
+      class="hidden aspect-video w-full animate-pulse bg-zinc-200 dark:bg-zinc-800 rounded-[calc(var(--radius-input)-4px)]">
     </div>
 
     <div class="p-3">
@@ -60,8 +60,8 @@
 <script>
   // Show empty state by default
   const emptyState = document.getElementById('empty-state');
-  emptyState.classList.remove('hidden');
-  emptyState.classList.add('flex');
+  emptyState?.classList.remove('hidden');
+  emptyState?.classList.add('flex');
 
   function extractVideoId(url) {
     const patterns = [
@@ -87,21 +87,21 @@
   const titleEl = document.getElementById("yt-title");
   const channelEl = document.getElementById("yt-channel");
   const submitBtn = document.getElementById("yt-submit");
-  const spinner = submitBtn.querySelector('.spinner');
+  const spinner = submitBtn?.querySelector('.spinner');
 
   let debounceTimer;
   let currentRequestId = 0;
 
   function resetPreview() {
-    preview.classList.add("hidden");
-    errorEl.classList.add("hidden");
-    submitBtn.disabled = true;
-    emptyState.classList.remove('hidden');
-    emptyState.classList.add('flex');
+    preview?.classList.add("hidden");
+    errorEl?.classList.add("hidden");
+    if(submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
+    emptyState?.classList.remove('hidden');
+    emptyState?.classList.add('flex');
   }
 
   async function handleInput() {
-    const url = input.value.trim();
+    const url = (input as HTMLInputElement)?.value.trim();
 
     clearTimeout(debounceTimer);
 
@@ -113,16 +113,18 @@
     const videoId = extractVideoId(url);
 
     if (!videoId) {
-      preview.classList.add("hidden");
-      errorEl.classList.remove("hidden");
-      errorEl.textContent = "Please enter a valid YouTube URL.";
-      submitBtn.disabled = true;
-      emptyState.classList.remove('hidden');
-      emptyState.classList.add('flex');
+      preview?.classList.add("hidden");
+      if(errorEl) {
+          errorEl.classList.remove("hidden");
+          errorEl.textContent = "Please enter a valid YouTube URL.";
+      }
+      if(submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
+      emptyState?.classList.remove('hidden');
+      emptyState?.classList.add('flex');
       return;
     }
 
-    errorEl.classList.add("hidden");
+    errorEl?.classList.add("hidden");
 
     debounceTimer = setTimeout(() => {
       fetchVideoInfo(url, videoId);
@@ -132,20 +134,20 @@
   async function fetchVideoInfo(url, videoId) {
     const requestId = ++currentRequestId;
 
-    thumb.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-    thumbSkeleton.classList.remove("hidden");
+    if(thumb) (thumb as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+    thumbSkeleton?.classList.remove("hidden");
     
     // UI state
-    spinner.classList.remove('hidden');
-    input.disabled = true;
+    spinner?.classList.remove('hidden');
+    if(input) (input as HTMLInputElement).disabled = true;
     
-    titleEl.textContent = "Fetching video...";
-    channelEl.textContent = "";
+    if(titleEl) titleEl.textContent = "Fetching video...";
+    if(channelEl) channelEl.textContent = "";
 
-    preview.classList.remove("hidden");
-    emptyState.classList.add('hidden');
-    emptyState.classList.remove('flex');
-    submitBtn.disabled = true;
+    preview?.classList.remove("hidden");
+    emptyState?.classList.add('hidden');
+    emptyState?.classList.remove('flex');
+    if(submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
 
     try {
       const response = await fetch(
@@ -157,37 +159,39 @@
       if (!response.ok) throw new Error();
 
       const data = await response.json();
-      titleEl.textContent = data.title || "Untitled video";
+      if(titleEl) titleEl.textContent = data.title || "Untitled video";
 
-      channelEl.textContent = data.author_name || "";
+      if(channelEl) channelEl.textContent = data.author_name || "";
 
-      if (data.thumbnail_url) {
-        thumb.src = data.thumbnail_url;
+      if (data.thumbnail_url && thumb) {
+        (thumb as HTMLImageElement).src = data.thumbnail_url;
       }
 
-      submitBtn.disabled = false;
+      if(submitBtn) (submitBtn as HTMLButtonElement).disabled = false;
     } catch {
       if (requestId !== currentRequestId) return;
 
-      preview.classList.add("hidden");
-      errorEl.textContent =
-        "Couldn't find that video. Check the link and try again.";
-      errorEl.classList.remove("hidden");
-      submitBtn.disabled = true;
-      emptyState.classList.remove('hidden');
-      emptyState.classList.add('flex');
+      preview?.classList.add("hidden");
+      if(errorEl) {
+        errorEl.textContent =
+          "Couldn't find that video. Check the link and try again.";
+        errorEl.classList.remove("hidden");
+      }
+      if(submitBtn) (submitBtn as HTMLButtonElement).disabled = true;
+      emptyState?.classList.remove('hidden');
+      emptyState?.classList.add('flex');
     } finally {
       if (requestId === currentRequestId) {
-        thumbSkeleton.classList.remove("hidden");
-        spinner.classList.add('hidden');
-        input.disabled = false;
+        thumbSkeleton?.classList.add("hidden");
+        spinner?.classList.add('hidden');
+        if(input) (input as HTMLInputElement).disabled = false;
       }
     }
   }
 
-  thumb.addEventListener("load", () => {
-    thumbSkeleton.classList.remove("hidden");
+  thumb?.addEventListener("load", () => {
+    thumbSkeleton?.classList.add("hidden");
   });
 
-  input.addEventListener("input", handleInput);
+  input?.addEventListener("input", handleInput);
 </script>
