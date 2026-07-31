@@ -1,0 +1,7 @@
+---
+const sources = ['YouTube', 'Instagram', 'X (Twitter)', 'TikTok'];
+---
+
+<select class="w-full p-3 mb-4 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-black">
+    {sources.map(source => <option value={source}>{source}</option>)}
+</select>

@@ -1,0 +1,19 @@
+---
+---
+
+<div class="flex p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg w-max mb-6">
+    <button data-tab="link" class="px-4 py-2 text-sm rounded-md bg-white dark:bg-zinc-700 shadow-sm tab-btn">Link</button>
+    <button data-tab="audio" class="px-4 py-2 text-sm rounded-md tab-btn">Audio</button>
+    <button data-tab="text" class="px-4 py-2 text-sm rounded-md tab-btn">Text</button>
+</div>
+
+<script>
+    const btns = document.querySelectorAll('.tab-btn');
+    btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            btns.forEach(b => b.classList.remove('bg-white', 'dark:bg-zinc-700', 'shadow-sm'));
+            btn.classList.add('bg-white', 'dark:bg-zinc-700', 'shadow-sm');
+            // Logic to switch view will be added in parent
+        });
+    });
+</script>

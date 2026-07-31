@@ -1,23 +1,24 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
+import TabSwitcher from "../components/TabSwitcher.astro";
+import Source from "../components/Source.astro";
 import UrlCard from "../components/UrlCard.astro";
 import SummaryCard from "../components/SummaryCard.astro";
-
-import "../styles/home.css";
 ---
 
 <Layout>
-<main class="min-h-dvh bg-black text-white px-4 sm:px-6 pt-8 pb-12 md:pt-14 md:pb-20 relative overflow-hidden">
-    <!-- Ambient monochrome glow -->
-    <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
-      <div class="w-[600px] h-[600px] rounded-full bg-white/5 blur-3xl"></div>
-    </div>
-<div class="w-full max-w-xl mx-auto relative">
-      <Hero />
-      <UrlCard />
-      <SummaryCard />
-    </div>
-
-  </main>
+    <Header />
+    <main class="min-h-dvh px-4 sm:px-6">
+        <div class="w-full max-w-xl mx-auto">
+            <Hero />
+            <TabSwitcher />
+            <div id="link-tab-content">
+                <Source />
+                <UrlCard />
+            </div>
+            <SummaryCard />
+        </div>
+    </main>
 </Layout>

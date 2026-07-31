@@ -1,0 +1,29 @@
+---
+const { theme } = Astro.props;
+---
+
+<button
+  id="theme-toggle"
+  class="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+  aria-label="Toggle theme"
+>
+  <span class="dark:hidden">🌙</span>
+  <span class="hidden dark:inline">☀️</span>
+</button>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  const doc = document.documentElement;
+
+  const isDark = () => doc.classList.contains('dark');
+
+  toggle?.addEventListener('click', () => {
+    if (isDark()) {
+      doc.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      doc.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  });
+</script>

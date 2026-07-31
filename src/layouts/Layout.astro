@@ -2,4 +2,24 @@
 import "../styles/global.css";
 ---
 
-<slot />
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Keplix AI</title>
+        <script is:inline>
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        </script>
+	</head>
+	<body class="bg-white dark:bg-black text-black dark:text-white transition-colors">
+		<slot />
+	</body>
+</html>
