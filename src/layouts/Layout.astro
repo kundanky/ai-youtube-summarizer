@@ -11,17 +11,21 @@ import "../styles/global.css";
 		<meta name="generator" content={Astro.generator} />
 		<title>Keplix AI</title>
         <script is:inline>
-            const theme = localStorage.getItem('theme');
-            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            // 1. Source of truth for initial theme application
+            function getInitialTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) return savedTheme;
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
             
-            if (theme === 'dark' || (!theme && systemDark)) {
+            if (getInitialTheme() === 'dark') {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
         </script>
 	</head>
-	<body class="bg-white dark:bg-black text-black dark:text-white transition-colors">
+	<body class="bg-white dark:bg-black text-black dark:text-white transition-colors duration-200">
 		<slot />
 	</body>
 </html>
