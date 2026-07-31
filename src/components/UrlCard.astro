@@ -1,67 +1,55 @@
 ---
-import "../styles/home.css";
 ---
 
 <section class="space-y-4">
 
-  <div class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl">
-
-    <label
-      for="yt-url"
-      class="mb-3 block text-xs uppercase tracking-[0.18em] text-zinc-500">
-      YouTube URL
-    </label>
-
     <input
       id="yt-url"
       type="url"
-      placeholder="https://youtube.com/watch?v=..."
+      placeholder="Paste YouTube link here..."
       autocomplete="off"
       spellcheck="false"
-      class="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-4 text-white placeholder:text-zinc-600 outline-none transition focus:border-white/30 focus:bg-black/50"
+      class="input-field"
     />
 
     <p
       id="yt-error"
-      class="mt-3 hidden text-sm text-red-400">
+      class="hidden text-sm text-red-500">
     </p>
 
     <button
       id="yt-submit"
       disabled
-      class="mt-5 w-full rounded-2xl bg-white py-4 font-semibold text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-zinc-600">
-
+      class="btn-primary flex items-center justify-center gap-2">
+      <span class="spinner hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
       Generate Summary
-
     </button>
-
-  </div>
-
+  
   <div
     id="yt-preview"
-    class="hidden overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl">
+    class="hidden card p-2 mt-4">
 
     <img
       id="yt-thumb"
       src=""
       alt=""
-      class="aspect-video w-full object-cover" />
+      class="aspect-video w-full object-cover rounded-md" />
 
     <div
       id="yt-thumb-skeleton"
-      class="hidden aspect-video w-full animate-pulse bg-zinc-800">
+      class="hidden aspect-video w-full animate-pulse bg-zinc-200 dark:bg-zinc-800 rounded-md">
     </div>
 
-    <div class="p-4">
+    <div class="p-3">
 
       <h3
         id="yt-title"
-        class="font-medium text-white leading-snug">
+        class="font-medium text-sm leading-snug text-zinc-900 dark:text-zinc-100">
       </h3>
 
       <p
         id="yt-channel"
-        class="mt-2 text-sm text-zinc-500">
+        class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
       </p>
 
     </div>
@@ -70,6 +58,11 @@ import "../styles/home.css";
 
 </section>
 <script>
+  // Show empty state by default
+  const emptyState = document.getElementById('empty-state');
+  emptyState.classList.remove('hidden');
+  emptyState.classList.add('flex');
+
   function extractVideoId(url) {
     const patterns = [
       /youtube\.com\/watch\?v=([^&\n?#]+)/,
@@ -94,6 +87,7 @@ import "../styles/home.css";
   const titleEl = document.getElementById("yt-title");
   const channelEl = document.getElementById("yt-channel");
   const submitBtn = document.getElementById("yt-submit");
+  const spinner = submitBtn.querySelector('.spinner');
 
   let debounceTimer;
   let currentRequestId = 0;
@@ -102,6 +96,8 @@ import "../styles/home.css";
     preview.classList.add("hidden");
     errorEl.classList.add("hidden");
     submitBtn.disabled = true;
+    emptyState.classList.remove('hidden');
+    emptyState.classList.add('flex');
   }
 
   async function handleInput() {
@@ -119,7 +115,10 @@ import "../styles/home.css";
     if (!videoId) {
       preview.classList.add("hidden");
       errorEl.classList.remove("hidden");
+      errorEl.textContent = "Please enter a valid YouTube URL.";
       submitBtn.disabled = true;
+      emptyState.classList.remove('hidden');
+      emptyState.classList.add('flex');
       return;
     }
 
@@ -135,11 +134,17 @@ import "../styles/home.css";
 
     thumb.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
     thumbSkeleton.classList.remove("hidden");
-
+    
+    // UI state
+    spinner.classList.remove('hidden');
+    input.disabled = true;
+    
     titleEl.textContent = "Fetching video...";
     channelEl.textContent = "";
 
     preview.classList.remove("hidden");
+    emptyState.classList.add('hidden');
+    emptyState.classList.remove('flex');
     submitBtn.disabled = true;
 
     try {
@@ -152,7 +157,7 @@ import "../styles/home.css";
       if (!response.ok) throw new Error();
 
       const data = await response.json();
-titleEl.textContent = data.title || "Untitled video";
+      titleEl.textContent = data.title || "Untitled video";
 
       channelEl.textContent = data.author_name || "";
 
@@ -169,15 +174,19 @@ titleEl.textContent = data.title || "Untitled video";
         "Couldn't find that video. Check the link and try again.";
       errorEl.classList.remove("hidden");
       submitBtn.disabled = true;
+      emptyState.classList.remove('hidden');
+      emptyState.classList.add('flex');
     } finally {
       if (requestId === currentRequestId) {
-        thumbSkeleton.classList.add("hidden");
+        thumbSkeleton.classList.remove("hidden");
+        spinner.classList.add('hidden');
+        input.disabled = false;
       }
     }
   }
 
   thumb.addEventListener("load", () => {
-    thumbSkeleton.classList.add("hidden");
+    thumbSkeleton.classList.remove("hidden");
   });
 
   input.addEventListener("input", handleInput);

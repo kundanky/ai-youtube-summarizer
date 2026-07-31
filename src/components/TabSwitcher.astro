@@ -1,19 +1,21 @@
 ---
 ---
 
-<div class="flex p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg w-max mb-6">
-    <button data-tab="link" class="px-4 py-2 text-sm rounded-md bg-white dark:bg-zinc-700 shadow-sm tab-btn">Link</button>
-    <button data-tab="audio" class="px-4 py-2 text-sm rounded-md tab-btn">Audio</button>
-    <button data-tab="text" class="px-4 py-2 text-sm rounded-md tab-btn">Text</button>
+<div class="relative flex w-full bg-zinc-100 dark:bg-zinc-800 rounded-lg p-1" id="tab-switcher">
+    <div id="tab-indicator" class="absolute h-[calc(100%-8px)] top-1 left-1 w-[calc(33.33%-8px)] bg-white dark:bg-zinc-700 rounded-md shadow-sm transition-all duration-200 ease-out"></div>
+    <button data-tab="link" class="relative flex-1 py-2 text-sm font-medium z-10 transition-colors">Link</button>
+    <button data-tab="audio" class="relative flex-1 py-2 text-sm font-medium z-10 transition-colors">Audio</button>
+    <button data-tab="text" class="relative flex-1 py-2 text-sm font-medium z-10 transition-colors">Text</button>
 </div>
 
 <script>
-    const btns = document.querySelectorAll('.tab-btn');
-    btns.forEach(btn => {
+    const btns = document.querySelectorAll('#tab-switcher button');
+    const indicator = document.getElementById('tab-indicator');
+    
+    btns.forEach((btn, index) => {
         btn.addEventListener('click', () => {
-            btns.forEach(b => b.classList.remove('bg-white', 'dark:bg-zinc-700', 'shadow-sm'));
-            btn.classList.add('bg-white', 'dark:bg-zinc-700', 'shadow-sm');
-            // Logic to switch view will be added in parent
+            const width = indicator.offsetWidth;
+            indicator.style.transform = `translateX(${index * 100}%)`;
         });
     });
 </script>
