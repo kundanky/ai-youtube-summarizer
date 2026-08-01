@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { UserButton, Show, UserProfile } from '@clerk/astro/components';
+import { UserButton, ClerkLoaded, SignedIn, UserProfile } from '@clerk/astro/components';
 ---
 
 <Layout>
@@ -12,6 +13,13 @@ import { UserButton, Show, UserProfile } from '@clerk/astro/components';
           <UserButton />
         </div>
       </Show>
+      <ClerkLoaded>
+        <SignedIn>
+          <div class="flex items-center gap-4">
+            <UserButton />
+          </div>
+        </SignedIn>
+      </ClerkLoaded>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
