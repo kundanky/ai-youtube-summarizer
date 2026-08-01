@@ -15,17 +15,16 @@ export const YouTubePlatform: Platform = {
   validationRegex: /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([^&\n?#]+)/,
   fetchMetadata: async (url: string): Promise<Metadata> => {
     try {
-      const response = await fetch("/api/metadata", {
-        method: "POST",
-        body: JSON.stringify({ url }),
+      const response = await fetch('/api/metadata', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
       });
-      if (!response.ok) throw new Error();
       const data = await response.json();
-      return {
-        title: data.title ?? "Untitled video",
-        author: data.author_name ?? "",
-        thumbnail: data.thumbnail_url,
-      };
+      if (!response.ok) {
+        return { title: "", error: data.error || "Failed to fetch metadata" };
+      }
+      return data;
     } catch (e) {
       return {
         title: "",
