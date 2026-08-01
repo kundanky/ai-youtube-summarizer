@@ -1,0 +1,23 @@
+
+> youtube-summary-ai@0.0.1 build
+> astro build
+
+Error: Cannot find native binding. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+    at file:///data/data/com.termux/files/home/Projects/youtube-summary-ai/node_modules/rolldown/dist/shared/binding-Cv62mM1i.mjs:586:34
+    at file:///data/data/com.termux/files/home/Projects/youtube-summary-ai/node_modules/rolldown/dist/shared/binding-Cv62mM1i.mjs:9:49
+    ... 4 lines matching cause stack trace ...
+    at async cli (file:///data/data/com.termux/files/home/Projects/youtube-summary-ai/node_modules/astro/dist/cli/index.js:220:5) {
+  cause: Error: UVWASI_EACCES, uvwasi_init
+      at file:///data/data/com.termux/files/home/Projects/youtube-summary-ai/node_modules/rolldown/dist/shared/binding-Cv62mM1i.mjs:483:18
+      ... 8 lines matching cause stack trace ...
+      at async cli (file:///data/data/com.termux/files/home/Projects/youtube-summary-ai/node_modules/astro/dist/cli/index.js:220:5) {
+    cause: Error: Cannot find module './rolldown-binding.wasi.cjs'
+    Require stack:
+    - /data/data/com.termux/files/home/Projects/youtube-summary-ai/node_modules/rolldown/dist/shared/binding-Cv62mM1i.mjs
+        at file:///data/data/com.termux/files/home/Projects/youtube-summary-ai/node_modules/rolldown/dist/shared/binding-Cv62mM1i.mjs:483:18
+        ... 8 lines matching cause stack trace ...
+        at async cli (file:///data/data/com.termux/files/home/Projects/youtube-summary-ai/node_modules/astro/dist/cli/index.js:220:5) {
+      cause: [Error]
+    }
+  }
+}

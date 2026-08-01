@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { UserButton, Show, UserProfile } from '@clerk/astro/components';
+---
+
+<Layout>
+  <main class="max-w-4xl mx-auto p-6">
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-3xl font-bold">Dashboard</h1>
+      <Show when="signed-in">
+        <div class="flex items-center gap-4">
+          <UserButton />
+        </div>
+      </Show>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Plan Placeholder -->
+      <section class="p-6 border rounded-lg">
+        <h2 class="text-xl font-semibold mb-2">Current Plan</h2>
+        <p class="text-gray-600">Free Tier</p>
+      </section>
+
+      <!-- Usage Placeholder -->
+      <section class="p-6 border rounded-lg">
+        <h2 class="text-xl font-semibold mb-2">Usage</h2>
+        <p class="text-gray-600">Usage tracking will be available in Phase 7.</p>
+      </section>
+    </div>
+
+    <!-- Recent Summaries Placeholder -->
+    <section class="mt-8 p-6 border rounded-lg">
+      <h2 class="text-xl font-semibold mb-4">Recent Summaries</h2>
+      <p class="text-gray-600">Usage tracking will be available in Phase 7.</p>
+    </section>
+  </main>
+</Layout>
