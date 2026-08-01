@@ -15,9 +15,10 @@ export const YouTubePlatform: Platform = {
   validationRegex: /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([^&\n?#]+)/,
   fetchMetadata: async (url: string): Promise<Metadata> => {
     try {
-      const response = await fetch(
-        `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
-      );
+      const response = await fetch("/api/metadata", {
+        method: "POST",
+        body: JSON.stringify({ url }),
+      });
       if (!response.ok) throw new Error();
       const data = await response.json();
       return {
