@@ -1,3 +1,4 @@
+export const prerender = false;
 import type { APIRoute } from 'astro';
 import { getAIProvider } from '../../lib/ai/factory';
 import { InMemoryUsageProvider } from '../../lib/usage/provider';
