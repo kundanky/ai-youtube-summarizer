@@ -220,6 +220,41 @@
     updateUI();
   });
 
+  submitBtn?.addEventListener("click", async () => {
+    const url = input?.value.trim();
+    if (!url) return;
+
+    spinner?.classList.remove("hidden");
+    submitBtn.disabled = true;
+    errorEl?.classList.add("hidden");
+
+    try {
+        const response = await fetch('/api/summarize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ platform: activePlatform.id, input: url })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to generate summary');
+        }
+
+        // Assuming SummaryCard or similar handles the result, 
+        // for now just log or trigger a global update event.
+        window.dispatchEvent(new CustomEvent('summary-generated', { detail: data }));
+    } catch (err: any) {
+        if (errorEl) {
+            errorEl.textContent = err.message;
+            errorEl.classList.remove("hidden");
+        }
+    } finally {
+        spinner?.classList.add("hidden");
+        submitBtn.disabled = false;
+    }
+  });
+
   thumb?.addEventListener("load", () => {
     thumbSkeleton?.classList.add("hidden");
   });
